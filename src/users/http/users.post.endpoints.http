@@ -1,0 +1,10 @@
+## Get Request for Users Controller
+
+POST http://localhost:3000/users
+Content-Type: application/json
+{
+    "firstName": "Jay",
+    "lastName": "Tanakit",
+    "email": "tossapon43733@gmail.com",
+    "password": "@Yeah123456"
+}

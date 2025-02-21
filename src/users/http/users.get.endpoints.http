@@ -1,0 +1,3 @@
+## Get Request for Users Controller
+
+GET http://localhost:3000/users/123
