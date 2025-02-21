@@ -16,6 +16,14 @@
 
 ### 5. npm i @compodoc/compodoc latest
 
+# How to connect Nest.js to PostgreSQL with TypeORM
+
+### 1. npm i typeorm latest
+
+### 1.1 npm i @nestjs/typeorm latest
+
+### 2. npm i pg latest
+
 # Solve the running server (3000)
 
 ### 1. netstat -ano | findstr :3000
