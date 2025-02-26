@@ -11,13 +11,14 @@ import {
   IsString,
   IsUrl,
   Matches,
+  MaxLength,
   MinLength,
   ValidateNested,
 } from 'class-validator';
 import { PostType } from '../enums/postType.enums';
 import { Status } from '../enums/status.enums';
-import { CreatePostMetaOptionsDto } from './create-post-meta-options.dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { CreatePostMetaOptionsDto } from 'src/meta-options/dtos/create-post-meta-options.dto';
 
 export class CreatePostDto {
   @ApiProperty({
@@ -26,6 +27,7 @@ export class CreatePostDto {
   }) // Pipe นี้ทำให้ variable นี้ที่จำเป็นในการใช้ API เส้นนี้ ขึ้นบอกในหน้า Swagger
   @IsString()
   @MinLength(4)
+  @MaxLength(512)
   @IsNotEmpty()
   title: string;
 
@@ -44,6 +46,7 @@ export class CreatePostDto {
     example: 'my-blog-post',
   })
   @IsString()
+  @MaxLength(256)
   @IsNotEmpty()
   @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
     message:
@@ -84,6 +87,7 @@ export class CreatePostDto {
     example: 'http://localhost.com/images/image1.jpg',
   })
   @IsUrl()
+  @MaxLength(1024)
   @IsOptional()
   featuredImageUrl?: string;
 
@@ -105,31 +109,42 @@ export class CreatePostDto {
   @MinLength(3, { each: true })
   tags?: string[]; // Array of strings
 
-  @ApiPropertyOptional({
-    // In case ว่าเป็น Array ที่มี object หลายๆอันอยู่ข้างใน
+  // @ApiPropertyOptional({
+  //   // In case ว่าเป็น Array ที่มี object หลายๆอันอยู่ข้างใน
 
-    type: 'array',
-    required: false,
-    items: {
-      type: 'object',
-      properties: {
-        key: {
-          type: 'string',
-          description:
-            'The key can be any string identifies for your meta option',
-          example: 'sidebarEnabled',
-        },
-        value: {
-          type: 'any',
-          description: 'Any value that you want to save to the key',
-          example: true,
-        },
+  //   type: 'array',
+  //   required: false,
+  //   items: {
+  //     type: 'object',
+  //     properties: {
+  //       key: {
+  //         type: 'string',
+  //         description:
+  //           'The key can be any string identifies for your meta option',
+  //         example: 'sidebarEnabled',
+  //       },
+  //       value: {
+  //         type: 'any',
+  //         description: 'Any value that you want to save to the key',
+  //         example: true,
+  //       },
+  //     },
+  //   },
+  // })
+
+  @ApiPropertyOptional({
+    type: 'object',
+
+    properties: {
+      metavalue: {
+        type: 'string',
+        description: 'The metaValue is a JSON string',
+        example: '{"sidebarEnabled": true,}',
       },
     },
   })
   @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
+  @ValidateNested()
   @Type(() => CreatePostMetaOptionsDto) // If input data matches with DTO, @Type() will transform data into instance of this
-  metaOptions?: CreatePostMetaOptionsDto[];
+  metaOptions?: CreatePostMetaOptionsDto | null; // It's possible to be null because it is optional
 }

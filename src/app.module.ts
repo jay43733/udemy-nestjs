@@ -5,6 +5,9 @@ import { UsersModule } from './users/users.module';
 import { PostsModule } from './posts/posts.module';
 import { AuthsModule } from './auths/auths.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './users/user.entity';
+import { TagsModule } from './tags/tags.module';
+import { MetaOptionsModule } from './meta-options/meta-options.module';
 
 @Module({
   imports: [
@@ -19,8 +22,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       inject: [],
       useFactory: () => ({
         type: 'postgres',
-        entities: [],
-        synchronize: true,
+        // entities: [User],
+        autoLoadEntities: true, // Use to Auto load Entity to Database and No need to import entity in each module
+        synchronize: true, // Nest and Database given will be updated automatically, no need to migrate table
         port: 5432,
         username: 'postgres',
         password: 'jay43733',
@@ -28,6 +32,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         database: 'udemy-nest',
       }),
     }),
+
+    TagsModule,
+
+    MetaOptionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
